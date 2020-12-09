@@ -20,7 +20,7 @@ public class IOHandler {
             stationName = scanner.next();
 
             boolean check = Validator.checkUsingStationName(stationName);
-            if(!check) throw new IllegalArgumentException("이미 등록된 역 이름입니다.");
+            if(check) throw new IllegalArgumentException("이미 등록된 역 이름입니다.");
 
             check = Validator.checkStationNameLength(stationName);
             if(!check) throw new IllegalArgumentException("역 이름은 2글자 이상입니다.");
@@ -29,6 +29,26 @@ public class IOHandler {
             StationRepository.addStation(station);
             printInfo("지하철 역이 등록되었습니다.");
         } catch (IllegalArgumentException e) {
+            printError(e.getMessage());
+        }
+    }
+
+    public void removeStation() {
+        String stationName;
+
+        try {
+            System.out.println("## 삭제할 역 이름을 입력하세요.");
+            stationName = scanner.next();
+
+            boolean check = Validator.checkUsingStationName(stationName);
+            if(!check) throw new IllegalArgumentException("등록되지 않은 역입니다.");
+
+            check = Validator.checkStationInLine(stationName);
+            if(!check) throw new IllegalArgumentException("노선에 등록된 역은 삭제할 수 없습니다.");
+
+            StationRepository.deleteStation(stationName);
+            printInfo("지하철 역이 삭제되었습니다.");
+       } catch (IllegalArgumentException e) {
             printError(e.getMessage());
         }
     }

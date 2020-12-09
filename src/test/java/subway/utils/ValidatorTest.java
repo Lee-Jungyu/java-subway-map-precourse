@@ -2,8 +2,7 @@ package subway.utils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import subway.domain.Station;
-import subway.domain.StationRepository;
+import subway.domain.*;
 
 public class ValidatorTest {
 
@@ -37,6 +36,31 @@ public class ValidatorTest {
     public void 역이름_글자수확인_false() {
         String stationName = "역";
         boolean check = Validator.checkStationNameLength(stationName);
+        Assertions.assertEquals(check, false);
+    }
+
+    @Test
+    public void 노선에_역이_있는지_확인_true() {
+        String stationName = "강남역";
+        Station station = new Station(stationName);
+        Line line = new Line("2호선");
+        Section section = new Section(station, line, 1);
+        SectionRepository.addSection(section);
+
+        boolean check = Validator.checkStationInLine(stationName);
+        Assertions.assertEquals(check, true);
+    }
+
+    @Test
+    public void 노선에_역이_있는지_확인_false() {
+        String stationName = "강남역";
+        String stationName2 = "강북역";
+        Station station = new Station(stationName);
+        Line line = new Line("2호선");
+        Section section = new Section(station, line, 1);
+        SectionRepository.addSection(section);
+
+        boolean check = Validator.checkStationInLine(stationName2);
         Assertions.assertEquals(check, false);
     }
 }

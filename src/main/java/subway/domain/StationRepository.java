@@ -20,11 +20,11 @@ public class StationRepository {
         return stations.removeIf(station -> Objects.equals(station.getName(), name));
     }
 
-    public static boolean findStation(String name) {
-        for(Station station : stations) {
-            if(station.getName().equals(name))
-                return true;
+    public static int findStation(String name) {
+        for(int i = 0; i < stations.size(); i++) {
+            if(stations.get(i).getName().equals(name))
+                return i;
         }
-        return false;
+        return -1;
     }
 }
