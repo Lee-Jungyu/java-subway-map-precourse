@@ -53,6 +53,14 @@ public class IOHandler {
         }
     }
 
+    public void printStations() {
+        System.out.println("## 역 목록");
+
+        for(Station station : StationRepository.stations()) {
+            printInfo(station.getName());
+        }
+    }
+
     public void printInfo(String msg) {
         System.out.println("[INFO] " + msg);
     }
