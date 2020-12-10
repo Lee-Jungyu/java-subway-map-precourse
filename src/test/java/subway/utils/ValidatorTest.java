@@ -26,16 +26,35 @@ public class ValidatorTest {
     }
 
     @Test
-    public void 역이름_글자수확인_true() {
-        String stationName = "강남역";
-        boolean check = Validator.checkStationNameLength(stationName);
+    public void 노선이름_중복확인_true() {
+        String lineName = "2호선";
+        Line line = new Line(lineName);
+        LineRepository.addLine(line);
+        boolean check = Validator.checkUsingLineName(lineName);
         Assertions.assertEquals(check, true);
     }
 
     @Test
-    public void 역이름_글자수확인_false() {
+    public void 노선이름_중복확인_false() {
+        String lineName = "2호선";
+        String lineName2 = "3호선";
+        Line line = new Line(lineName);
+        LineRepository.addLine(line);
+        boolean check = Validator.checkUsingLineName(lineName2);
+        Assertions.assertEquals(check, false);
+    }
+
+    @Test
+    public void 글자수확인_true() {
+        String stationName = "강남역";
+        boolean check = Validator.checkNameLength(stationName, 2);
+        Assertions.assertEquals(check, true);
+    }
+
+    @Test
+    public void 글자수확인_false() {
         String stationName = "역";
-        boolean check = Validator.checkStationNameLength(stationName);
+        boolean check = Validator.checkNameLength(stationName, 2);
         Assertions.assertEquals(check, false);
     }
 

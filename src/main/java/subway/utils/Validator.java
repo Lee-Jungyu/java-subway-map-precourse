@@ -1,5 +1,6 @@
 package subway.utils;
 
+import subway.domain.LineRepository;
 import subway.domain.SectionRepository;
 import subway.domain.StationRepository;
 
@@ -8,8 +9,12 @@ public class Validator {
         return StationRepository.findStation(stationName) >= 0;
     }
 
-    public static boolean checkStationNameLength(String stationName) {
-        return stationName.length() > 1;
+    public static boolean checkUsingLineName(String lineName) {
+        return LineRepository.findLine(lineName) >= 0;
+    }
+
+    public static boolean checkNameLength(String stationName, int length) {
+        return stationName.length() >= length;
     }
 
     public static boolean checkStationInLine(String stationName) {

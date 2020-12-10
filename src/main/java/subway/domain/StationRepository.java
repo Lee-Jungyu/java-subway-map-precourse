@@ -27,4 +27,10 @@ public class StationRepository {
         }
         return -1;
     }
+
+    public static Station getStationByName(String stationName) {
+        int idx = findStation(stationName);
+        if(idx == -1) return null;
+        return stations.get(idx);
+    }
 }
