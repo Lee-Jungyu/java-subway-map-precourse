@@ -131,6 +131,47 @@ public class IOHandler {
         }
     }
 
+    public void inputSection() {
+        String lineName;
+        String stationName;
+        String order;
+
+        try {
+            System.out.println("## 노선을 입력하세요.");
+            lineName = scanner.next();
+
+            boolean check = Validator.checkUsingLineName(lineName);
+            if (!check) throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+
+            System.out.println("## 역이름을 입력하세요.");
+            stationName = scanner.next();
+
+            check = Validator.checkUsingStationName(stationName);
+            if (!check) throw new IllegalArgumentException("존재하지 않는 역입니다.");
+
+            System.out.println("## 순서를 입력하세요.");
+            order = scanner.next();
+
+            check = Validator.checkIntegerType(order);
+            if (!check) throw new IllegalArgumentException("순서는 숫자만 입력 가능합니다.");
+
+            int minNumber = 1;
+            int maxNumber = LineRepository.getLineByName(lineName).getStationCount();
+            check = Validator.checkIntegerRange(Integer.parseInt(order), minNumber, maxNumber);
+            if (!check) throw new IllegalArgumentException(minNumber + "이상 " + maxNumber + "이하의 숫자만 가능합니다.");
+
+            Station station = StationRepository.getStationByName(stationName);
+            Line line = LineRepository.getLineByName(lineName);
+
+            Section section = new Section(station, line, Integer.parseInt(order));
+            SectionRepository.addSection(section);
+
+            printInfo("구간이 등록되었습니다.");
+        } catch(IllegalArgumentException e) {
+            printError(e.getMessage());
+        }
+    }
+
     public void printInfo(String msg) {
         System.out.println("[INFO] " + msg);
     }

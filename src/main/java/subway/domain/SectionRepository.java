@@ -18,6 +18,7 @@ public class SectionRepository {
             }
         }
         sections.add(section);
+        LineRepository.getLineByName(section.getLineName()).increaseStationCount();
     }
 
     public static void deleteSection(String stationName, String lineName) {
@@ -36,6 +37,8 @@ public class SectionRepository {
                 section.decreaseOrder();
             }
         }
+
+        LineRepository.getLineByName(lineName).decreaseStationCount();
     }
 
     public static void deleteSectionByLineName(String lineName) {

@@ -82,4 +82,40 @@ public class ValidatorTest {
         boolean check = Validator.checkStationInLine(stationName2);
         Assertions.assertEquals(check, false);
     }
+
+    @Test
+    public void 숫자인지_확인_true() {
+        String string = "123";
+
+        boolean check = Validator.checkIntegerType(string);
+        Assertions.assertEquals(check, true);
+    }
+
+    @Test
+    public void 숫자인지_확인_false() {
+        String string = "1a";
+
+        boolean check = Validator.checkIntegerType(string);
+        Assertions.assertEquals(check, false);
+    }
+
+    @Test
+    public void 숫자범위_확인_true() {
+        int num = 1;
+        int min_num = 1;
+        int max_num = 3;
+
+        boolean check = Validator.checkIntegerRange(num, min_num, max_num);
+        Assertions.assertEquals(check, true);
+    }
+
+    @Test
+    public void 숫자범위_확인_false() {
+        int num = 0;
+        int min_num = 1;
+        int max_num = 3;
+
+        boolean check = Validator.checkIntegerRange(num, min_num, max_num);
+        Assertions.assertEquals(check, false);
+    }
 }

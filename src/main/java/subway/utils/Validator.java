@@ -20,4 +20,18 @@ public class Validator {
     public static boolean checkStationInLine(String stationName) {
         return SectionRepository.findByStationName(stationName);
     }
+
+    public static boolean checkIntegerType(String order) {
+        try {
+            Integer.parseInt(order);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean checkIntegerRange(int number, int minNumber, int maxNumber) {
+        if(number >= minNumber && number <= maxNumber) return true;
+        return false;
+    }
 }
