@@ -63,6 +63,17 @@ public class SectionRepository {
         return false;
     }
 
+    public static List<Station> findStationsByLineName(String lineName) {
+        List<Station> stations = new ArrayList<>();
+
+        for(Section section : sections) {
+            if(section.getLineName().equals(lineName))
+                stations.add(section.getStation());
+        }
+
+        return stations;
+    }
+
     public static void sortSections() {
         Collections.sort(sections);
     }

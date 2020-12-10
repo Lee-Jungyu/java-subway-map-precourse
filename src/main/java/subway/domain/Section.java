@@ -11,6 +11,14 @@ public class Section implements Comparable<Section> {
         this.order = order;
     }
 
+    public Station getStation() {
+        return station;
+    }
+
+    public Line getLine() {
+        return line;
+    }
+
     public String getStationName() {
         return station.getName();
     }

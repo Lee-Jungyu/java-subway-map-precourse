@@ -2,6 +2,7 @@ package subway.utils;
 
 import subway.domain.*;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class IOHandler {
@@ -197,6 +198,25 @@ public class IOHandler {
             printInfo("구간이 삭제되었습니다.");
         } catch (IllegalArgumentException e) {
             printError(e.getMessage());
+        }
+    }
+
+    public void printStationsInLines() {
+        System.out.println("## 지하철 노선도");
+
+        for(Line line : LineRepository.lines()) {
+            String lineName = line.getName();
+
+            printInfo(lineName);
+            printInfo("---");
+
+            List<Station> stations = SectionRepository.findStationsByLineName(lineName);
+
+            for(Station station : stations)
+                printInfo(station.getName());
+
+            printInfo("---");
+            System.out.println();
         }
     }
 
