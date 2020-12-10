@@ -56,6 +56,13 @@ public class SectionRepository {
         return false;
     }
 
+    public static boolean findByStationAndLineName(String stationName, String lineName) {
+        for(Section section : sections) {
+            if(section.getStationName().equals(stationName) && section.getLineName().equals(lineName)) return true;
+        }
+        return false;
+    }
+
     public static void sortSections() {
         Collections.sort(sections);
     }

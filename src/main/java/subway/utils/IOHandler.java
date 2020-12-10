@@ -172,6 +172,34 @@ public class IOHandler {
         }
     }
 
+    public void removeSection() {
+        String lineName;
+        String stationName;
+
+        try {
+            System.out.println("## 삭제할 구간의 노선을 입력하세요.");
+            lineName = scanner.next();
+
+            boolean check = Validator.checkUsingLineName(lineName);
+            if (!check) throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+
+            System.out.print("## 삭제할 구간의 역을 입력하세요.");
+            stationName = scanner.next();
+
+            check = Validator.checkUsingStationName(stationName);
+            if (!check) throw new IllegalArgumentException("존재하지 않는 역입니다.");
+
+            check = Validator.checkStationInLine(stationName, lineName);
+            if (!check) throw new IllegalArgumentException("해당 노선에 " + stationName + "은 없습니다.");
+
+            SectionRepository.deleteSection(stationName, lineName);
+
+            printInfo("구간이 삭제되었습니다.");
+        } catch (IllegalArgumentException e) {
+            printError(e.getMessage());
+        }
+    }
+
     public void printInfo(String msg) {
         System.out.println("[INFO] " + msg);
     }

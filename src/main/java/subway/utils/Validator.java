@@ -21,6 +21,10 @@ public class Validator {
         return SectionRepository.findByStationName(stationName);
     }
 
+    public static boolean checkStationInLine(String stationName, String lineName) {
+        return SectionRepository.findByStationAndLineName(stationName, lineName);
+    }
+
     public static boolean checkIntegerType(String order) {
         try {
             Integer.parseInt(order);
