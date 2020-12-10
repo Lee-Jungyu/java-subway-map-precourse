@@ -4,6 +4,8 @@ import subway.domain.LineRepository;
 import subway.domain.SectionRepository;
 import subway.domain.StationRepository;
 
+import java.util.List;
+
 public class Validator {
     public static boolean checkUsingStationName(String stationName) {
         return StationRepository.findStation(stationName) >= 0;
@@ -36,6 +38,11 @@ public class Validator {
 
     public static boolean checkIntegerRange(int number, int minNumber, int maxNumber) {
         if(number >= minNumber && number <= maxNumber) return true;
+        return false;
+    }
+
+    public static boolean checkValidValue(String value, List<String> strings) {
+        if(strings.contains(value)) return true;
         return false;
     }
 }

@@ -1,8 +1,69 @@
 package subway;
 
 import subway.domain.*;
+import subway.utils.IOHandler;
+
+import java.util.Scanner;
 
 public class SubwayApplication {
+
+    private IOHandler ioHandler;
+
+    public SubwayApplication(Scanner scanner) {
+        this.ioHandler = new IOHandler(scanner);
+    }
+
+    public void startApplication() {
+        setInitialize();
+        String selectedMenu = "0";
+        while(!selectedMenu.equals("Q")) {
+            selectedMenu = ioHandler.printMainMenu();
+
+            if(selectedMenu.equals("1"))
+                doStationManaging();
+            if(selectedMenu.equals("2"))
+                doLineManaging();
+            if(selectedMenu.equals("3"))
+                doSectionManaging();
+            if(selectedMenu.equals("4"))
+                ioHandler.printStationsInLines();
+
+        }
+    }
+
+    public void doStationManaging() {
+        String selectedMenu = ioHandler.printStationMenu();
+
+        if(selectedMenu.equals("1"))
+            ioHandler.inputStation();
+        if(selectedMenu.equals("2"))
+            ioHandler.removeStation();
+        if(selectedMenu.equals("3"))
+            ioHandler.printStations();
+
+    }
+
+    public void doLineManaging() {
+        String selectedMenu = ioHandler.printLineMenu();
+
+        if(selectedMenu.equals("1"))
+            ioHandler.inputLine();
+        if(selectedMenu.equals("2"))
+            ioHandler.removeLine();
+        if(selectedMenu.equals("3"))
+            ioHandler.printLines();
+
+    }
+
+    public void doSectionManaging() {
+        String selectedMenu = ioHandler.printSectionMenu();
+
+        if(selectedMenu.equals("1"))
+            ioHandler.inputSection();
+        if(selectedMenu.equals("2"))
+            ioHandler.removeSection();
+
+    }
 
     public void setInitialize() {
         Station station1 = new Station("교대역");

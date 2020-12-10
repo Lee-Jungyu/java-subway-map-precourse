@@ -42,7 +42,7 @@ public class Section implements Comparable<Section> {
     @Override
     public int compareTo(Section s) {
         if(this.getLineName().equals(s.getLineName())) {
-            return Integer.compare(this.getOrder(), s.getOrder());
+            return String.valueOf(this.getOrder()).compareTo(String.valueOf(s.getOrder()));
         }
         return this.getLineName().compareTo(s.getLineName());
     }

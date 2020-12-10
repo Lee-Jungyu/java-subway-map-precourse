@@ -14,7 +14,7 @@ public class SectionRepository {
     public static void addSection(Section section) {
         for(Section s : sections) {
             if(s.getLineName().equals(section.getLineName()) && s.getOrder() >= section.getOrder()) {
-                section.increaseOrder();
+                s.increaseOrder();
             }
         }
         sections.add(section);

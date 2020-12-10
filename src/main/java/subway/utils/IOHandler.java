@@ -2,6 +2,7 @@ package subway.utils;
 
 import subway.domain.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,8 +22,18 @@ public class IOHandler {
         System.out.println("Q. 돌아가기");
         System.out.println();
 
-        String menu = scanner.next();
-        return menu;
+        while(true) {
+            System.out.println("원하는 기능을 선택하세요.");
+            String menu = scanner.next();
+
+            System.out.println();
+
+            String[] strings = {"1", "2", "3", "4", "Q"};
+            boolean check = Validator.checkValidValue(menu, Arrays.asList(strings.clone()));
+            if(check) return menu;
+
+            printError("선택할 수 없는 기능입니다.");
+        }
     }
 
     public String printStationMenu() {
@@ -33,8 +44,19 @@ public class IOHandler {
         System.out.println("B. 돌아가기");
         System.out.println();
 
-        String menu = scanner.next();
-        return menu;
+        while(true) {
+            System.out.println("원하는 기능을 선택하세요.");
+            String menu = scanner.next();
+
+            System.out.println();
+
+            String[] strings = {"1", "2", "3", "B"};
+            boolean check = Validator.checkValidValue(menu, Arrays.asList(strings.clone()));
+            if(check) return menu;
+
+
+            printError("선택할 수 없는 기능입니다.");
+        }
     }
 
     public String printLineMenu() {
@@ -45,8 +67,18 @@ public class IOHandler {
         System.out.println("B. 돌아가기");
         System.out.println();
 
-        String menu = scanner.next();
-        return menu;
+        while(true) {
+            System.out.println("원하는 기능을 선택하세요.");
+            String menu = scanner.next();
+
+            System.out.println();
+
+            String[] strings = {"1", "2", "3", "B"};
+            boolean check = Validator.checkValidValue(menu, Arrays.asList(strings.clone()));
+            if(check) return menu;
+
+            printError("선택할 수 없는 기능입니다.");
+        }
     }
 
     public String printSectionMenu() {
@@ -56,12 +88,24 @@ public class IOHandler {
         System.out.println("B. 돌아가기");
         System.out.println();
 
-        String menu = scanner.next();
-        return menu;
+        while(true) {
+            System.out.println("원하는 기능을 선택하세요.");
+            String menu = scanner.next();
+
+            System.out.println();
+
+            String[] strings = {"1", "2", "B"};
+            boolean check = Validator.checkValidValue(menu, Arrays.asList(strings.clone()));
+            if(check) return menu;
+
+            printError("선택할 수 없는 기능입니다.");
+        }
     }
-    
+
     public void printStationsInLines() {
         System.out.println("## 지하철 노선도");
+
+        SectionRepository.sortSections();
 
         for(Line line : LineRepository.lines()) {
             String lineName = line.getName();
@@ -74,7 +118,6 @@ public class IOHandler {
             for(Station station : stations)
                 printInfo(station.getName());
 
-            printInfo("---");
             System.out.println();
         }
     }
@@ -86,6 +129,8 @@ public class IOHandler {
             System.out.println("## 등록할 역 이름을 입력하세요.");
             stationName = scanner.next();
 
+            System.out.println();
+
             boolean check = Validator.checkUsingStationName(stationName);
             if(check) throw new IllegalArgumentException("이미 등록된 역 이름입니다.");
 
@@ -95,6 +140,8 @@ public class IOHandler {
             Station station = new Station(stationName);
             StationRepository.addStation(station);
             printInfo("지하철 역이 등록되었습니다.");
+
+            System.out.println();
         } catch (IllegalArgumentException e) {
             printError(e.getMessage());
         }
@@ -107,14 +154,18 @@ public class IOHandler {
             System.out.println("## 삭제할 역 이름을 입력하세요.");
             stationName = scanner.next();
 
+            System.out.println();
+
             boolean check = Validator.checkUsingStationName(stationName);
             if(!check) throw new IllegalArgumentException("등록되지 않은 역입니다.");
 
             check = Validator.checkStationInLine(stationName);
-            if(!check) throw new IllegalArgumentException("노선에 등록된 역은 삭제할 수 없습니다.");
+            if(check) throw new IllegalArgumentException("노선에 등록된 역은 삭제할 수 없습니다.");
 
             StationRepository.deleteStation(stationName);
             printInfo("지하철 역이 삭제되었습니다.");
+
+            System.out.println();
        } catch (IllegalArgumentException e) {
             printError(e.getMessage());
         }
@@ -126,6 +177,7 @@ public class IOHandler {
         for(Station station : StationRepository.stations()) {
             printInfo(station.getName());
         }
+        System.out.println();
     }
 
     public void inputLine() {
@@ -137,6 +189,8 @@ public class IOHandler {
             System.out.println("## 등록할 노선 이름을 입력하세요.");
             lineName = scanner.next();
 
+            System.out.println();
+
             boolean check = Validator.checkUsingLineName(lineName);
             if (check) throw new IllegalArgumentException("이미 등록된 노선입니다.");
 
@@ -146,11 +200,15 @@ public class IOHandler {
             System.out.println("## 등록할 노선의 상행 종점역 이름을 입력하세요.");
             startStationName = scanner.next();
 
+            System.out.println();
+
             check = Validator.checkUsingStationName(startStationName);
             if (!check) throw new IllegalArgumentException("존재하지 않는 역입니다.");
 
             System.out.println("## 등록할 노선의 하행 종점역 이름을 입력하세요.");
             lastStationName = scanner.next();
+
+            System.out.println();
 
             check = Validator.checkUsingStationName(lastStationName);
             if (!check) throw new IllegalArgumentException("존재하지 않는 역입니다.");
@@ -167,6 +225,8 @@ public class IOHandler {
             SectionRepository.addSection(section2);
 
             printInfo("지하철 노선이 등록되었습니다");
+
+            System.out.println();
         } catch (IllegalArgumentException e) {
             printError(e.getMessage());
         }
@@ -179,6 +239,8 @@ public class IOHandler {
             System.out.println("## 삭제할 노선 이름을 입력하세요.");
             lineName = scanner.next();
 
+            System.out.println();
+
             boolean check = Validator.checkUsingLineName(lineName);
             if (!check) throw new IllegalArgumentException("존재하지 않는 노선입니다.");
 
@@ -186,6 +248,9 @@ public class IOHandler {
             LineRepository.deleteLineByName(lineName);
 
             printInfo("지하철 노선이 삭제되었습니다.");
+
+            System.out.println();
+
         } catch (IllegalArgumentException e) {
             printError(e.getMessage());
         }
@@ -197,6 +262,8 @@ public class IOHandler {
         for(Line line : LineRepository.lines()) {
             printInfo(line.getName());
         }
+
+        System.out.println();
     }
 
     public void inputSection() {
@@ -208,17 +275,23 @@ public class IOHandler {
             System.out.println("## 노선을 입력하세요.");
             lineName = scanner.next();
 
+            System.out.println();
+
             boolean check = Validator.checkUsingLineName(lineName);
             if (!check) throw new IllegalArgumentException("존재하지 않는 노선입니다.");
 
             System.out.println("## 역이름을 입력하세요.");
             stationName = scanner.next();
 
+            System.out.println();
+
             check = Validator.checkUsingStationName(stationName);
             if (!check) throw new IllegalArgumentException("존재하지 않는 역입니다.");
 
             System.out.println("## 순서를 입력하세요.");
             order = scanner.next();
+
+            System.out.println();
 
             check = Validator.checkIntegerType(order);
             if (!check) throw new IllegalArgumentException("순서는 숫자만 입력 가능합니다.");
@@ -235,6 +308,8 @@ public class IOHandler {
             SectionRepository.addSection(section);
 
             printInfo("구간이 등록되었습니다.");
+
+            System.out.println();
         } catch(IllegalArgumentException e) {
             printError(e.getMessage());
         }
@@ -248,11 +323,15 @@ public class IOHandler {
             System.out.println("## 삭제할 구간의 노선을 입력하세요.");
             lineName = scanner.next();
 
+            System.out.println();
+
             boolean check = Validator.checkUsingLineName(lineName);
             if (!check) throw new IllegalArgumentException("존재하지 않는 노선입니다.");
 
             System.out.print("## 삭제할 구간의 역을 입력하세요.");
             stationName = scanner.next();
+
+            System.out.println();
 
             check = Validator.checkUsingStationName(stationName);
             if (!check) throw new IllegalArgumentException("존재하지 않는 역입니다.");
@@ -263,6 +342,8 @@ public class IOHandler {
             SectionRepository.deleteSection(stationName, lineName);
 
             printInfo("구간이 삭제되었습니다.");
+
+            System.out.println();
         } catch (IllegalArgumentException e) {
             printError(e.getMessage());
         }
@@ -274,5 +355,6 @@ public class IOHandler {
 
     public void printError(String msg) {
         System.err.println("[ERROR] " + msg);
+        System.out.println();
     }
 }
