@@ -38,6 +38,14 @@ public class SectionRepository {
         }
     }
 
+    public static void deleteSectionByLineName(String lineName) {
+        for(Section section : sections) {
+            if(section.getLineName().equals(lineName)) {
+                sections.remove(section);
+            }
+        }
+    }
+
     public static boolean findByStationName(String stationName) {
         for(Section section : sections) {
             if(section.getStationName().equals(stationName)) return true;

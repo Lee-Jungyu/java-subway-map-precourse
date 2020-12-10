@@ -104,6 +104,25 @@ public class IOHandler {
         }
     }
 
+    public void removeLine() {
+        String lineName;
+
+        try {
+            System.out.println("## 삭제할 노선 이름을 입력하세요.");
+            lineName = scanner.next();
+
+            boolean check = Validator.checkUsingLineName(lineName);
+            if (!check) throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+
+            SectionRepository.deleteSectionByLineName(lineName);
+            LineRepository.deleteLineByName(lineName);
+
+            printInfo("지하철 노선이 삭제되었습니다.");
+        } catch (IllegalArgumentException e) {
+            printError(e.getMessage());
+        }
+    }
+
     public void printInfo(String msg) {
         System.out.println("[INFO] " + msg);
     }
