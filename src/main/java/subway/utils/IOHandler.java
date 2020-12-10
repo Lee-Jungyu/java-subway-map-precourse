@@ -123,6 +123,14 @@ public class IOHandler {
         }
     }
 
+    public void printLines() {
+        System.out.println("## 노선 목록");
+
+        for(Line line : LineRepository.lines()) {
+            printInfo(line.getName());
+        }
+    }
+
     public void printInfo(String msg) {
         System.out.println("[INFO] " + msg);
     }
