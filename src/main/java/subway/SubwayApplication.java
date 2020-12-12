@@ -2,15 +2,16 @@ package subway;
 
 import subway.domain.*;
 import subway.utils.IOHandler;
+import subway.utils.Validator;
 
-import java.util.Scanner;
+import java.util.List;
 
 public class SubwayApplication {
 
     private IOHandler ioHandler;
 
-    public SubwayApplication(Scanner scanner) {
-        this.ioHandler = new IOHandler(scanner);
+    public SubwayApplication() {
+        this.ioHandler = new IOHandler();
     }
 
     public void startApplication() {
@@ -26,7 +27,7 @@ public class SubwayApplication {
             if(selectedMenu.equals("3"))
                 doSectionManaging();
             if(selectedMenu.equals("4"))
-                ioHandler.printStationsInLines();
+                printSubwayMap();
 
         }
     }
@@ -35,34 +36,185 @@ public class SubwayApplication {
         String selectedMenu = ioHandler.printStationMenu();
 
         if(selectedMenu.equals("1"))
-            ioHandler.inputStation();
+            insertStation();
         if(selectedMenu.equals("2"))
-            ioHandler.removeStation();
+            deleteStation();
         if(selectedMenu.equals("3"))
-            ioHandler.printStations();
-
+            printStations();
     }
 
     public void doLineManaging() {
         String selectedMenu = ioHandler.printLineMenu();
 
         if(selectedMenu.equals("1"))
-            ioHandler.inputLine();
+            insertLine();
         if(selectedMenu.equals("2"))
-            ioHandler.removeLine();
+            deleteLine();
         if(selectedMenu.equals("3"))
-            ioHandler.printLines();
-
+            printLines();
     }
 
     public void doSectionManaging() {
         String selectedMenu = ioHandler.printSectionMenu();
 
         if(selectedMenu.equals("1"))
-            ioHandler.inputSection();
+            insertSection();
         if(selectedMenu.equals("2"))
-            ioHandler.removeSection();
+            deleteSection();
+    }
 
+    private void insertStation() {
+        try {
+            String stationName = IOHandler.getString("등록할 역 이름을 입력하세요");
+            if (Validator.checkUsingStationName(stationName)) throw new IllegalArgumentException("이미 등록된 역 이름입니다.");
+            if (!Validator.checkNameLength(stationName, 2)) throw new IllegalArgumentException("역 이름은 2글자 이상입니다.");
+
+            StationRepository.addStation(new Station(stationName));
+            IOHandler.printInfo("지하철 역이 등록되었습니다.\n");
+        } catch(IllegalArgumentException e) {
+            ioHandler.printError(e.getMessage());
+        }
+    }
+
+    private void deleteStation() {
+        try {
+            String stationName = IOHandler.getString("삭제할 역 이름을 입력하세요.");
+            if (!Validator.checkUsingStationName(stationName)) throw new IllegalArgumentException("등록되지 않은 역입니다.");
+            if (Validator.checkStationInLine(stationName)) throw new IllegalArgumentException("노선에 등록된 역은 삭제할 수 없습니다.");
+
+            StationRepository.deleteStation(stationName);
+            IOHandler.printInfo("지하철 역이 삭제되었습니다.");
+        } catch(IllegalArgumentException e) {
+            ioHandler.printError(e.getMessage());
+        }
+    }
+
+    private void printStations() {
+        IOHandler.printString("역 목록");
+
+        for(Station station : StationRepository.stations())
+            IOHandler.printInfo(station.getName());
+
+        System.out.println();
+    }
+
+    private void insertLine() {
+        try {
+            String lineName = IOHandler.getString("등록할 노선 이름을 입력하세요.");
+            if (Validator.checkUsingLineName(lineName)) throw new IllegalArgumentException("이미 등록된 노선입니다.");
+            if (!Validator.checkNameLength(lineName, 2)) throw new IllegalArgumentException("노선 이름은 2글자 이상입니다.");
+
+            String firstStationName = IOHandler.getString("등록할 노선의 상행 종점역 이름을 입력하세요.");
+            if (!Validator.checkUsingStationName(firstStationName)) throw new IllegalArgumentException("존재하지 않는 역입니다.");
+
+            String lastStationName = IOHandler.getString("등록할 노선의 하행 종점역 이름을 입력하세요.");
+            if (!Validator.checkUsingStationName(lastStationName)) throw new IllegalArgumentException("존재하지 않는 역입니다.");
+
+            Line line = new Line(lineName);
+            LineRepository.addLine(line);
+
+            Station firstStation = StationRepository.getStationByName(firstStationName);
+            Station lastStation = StationRepository.getStationByName(lastStationName);
+
+            Section section1 = new Section(firstStation, line, 1);
+            Section section2 = new Section(lastStation, line, 2);
+            SectionRepository.addSection(section1);
+            SectionRepository.addSection(section2);
+
+            IOHandler.printInfo("지하철 노선이 등록되었습니다\n");
+
+        } catch (IllegalArgumentException e) {
+            IOHandler.printError(e.getMessage());
+        }
+    }
+
+    private void deleteLine() {
+        try {
+            String lineName = IOHandler.getString("삭제할 노선 이름을 입력하세요.");
+            if (!Validator.checkUsingLineName(lineName)) throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+
+            SectionRepository.deleteSectionByLineName(lineName);
+            LineRepository.deleteLineByName(lineName);
+
+            IOHandler.printInfo("지하철 노선이 삭제되었습니다.\n");
+        } catch (IllegalArgumentException e) {
+            IOHandler.printError(e.getMessage());
+        }
+    }
+
+    private void printLines() {
+        IOHandler.printString("노선 목록");
+
+        for(Line line : LineRepository.lines())
+            IOHandler.printInfo(line.getName());
+
+        System.out.println();
+    }
+
+    private void insertSection() {
+        try {
+            String lineName = IOHandler.getString("노선을 입력하세요.");
+            if (!Validator.checkUsingLineName(lineName)) throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+
+            String stationName = IOHandler.getString("역 이을 입력하세요.");
+            if (!Validator.checkUsingStationName(stationName)) throw new IllegalArgumentException("존재하지 않는 역입니다.");
+
+            String order = IOHandler.getString("순서를 입력하세요.");
+            if (!Validator.checkIntegerType(order)) throw new IllegalArgumentException("순서는 숫자만 입력 가능합니다.");
+
+            int minNumber = 1;
+            int maxNumber = LineRepository.getLineByName(lineName).getStationCount() + 1;
+            if (!Validator.checkIntegerRange(Integer.parseInt(order), minNumber, maxNumber))
+                throw new IllegalArgumentException(minNumber + "이상 " + maxNumber + "이하의 숫자만 가능합니다.");
+
+            Station station = StationRepository.getStationByName(stationName);
+            Line line = LineRepository.getLineByName(lineName);
+
+            Section section = new Section(station, line, Integer.parseInt(order));
+            SectionRepository.addSection(section);
+
+            IOHandler.printInfo("구간이 등록되었습니다.\n");
+        } catch(IllegalArgumentException e) {
+            ioHandler.printError(e.getMessage());
+        }
+    }
+
+    private void deleteSection() {
+        try {
+            String lineName = IOHandler.getString("삭제할 구간의 노선을 입력하세요.");
+            if (!Validator.checkUsingLineName(lineName)) throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+
+            String stationName = IOHandler.getString("삭제할 구간의 역을 입력하세요.");
+            if (!Validator.checkUsingStationName(stationName)) throw new IllegalArgumentException("존재하지 않는 역입니다.");
+
+            if (!Validator.checkStationInLine(stationName, lineName)) throw new IllegalArgumentException(lineName + "에 " + stationName + "은 없습니다.");
+
+            SectionRepository.deleteSection(stationName, lineName);
+
+            IOHandler.printInfo("구간이 삭제되었습니다.\n");
+        } catch (IllegalArgumentException e) {
+            IOHandler.printError(e.getMessage());
+        }
+    }
+
+    private void printSubwayMap() {
+        IOHandler.printString(" 지하철 노선도");
+
+        SectionRepository.sortSections();
+
+        for(Line line : LineRepository.lines()) {
+            String lineName = line.getName();
+
+            IOHandler.printInfo(lineName);
+            IOHandler.printInfo("---");
+
+            List<Station> stations = SectionRepository.findStationsByLineName(lineName);
+
+            for(Station station : stations)
+                IOHandler.printInfo(station.getName());
+
+            System.out.println();
+        }
     }
 
     public void setInitialize() {
